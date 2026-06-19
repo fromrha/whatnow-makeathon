@@ -58,6 +58,57 @@ Built the starter app shell and first working prototype:
 
 ---
 
+## Phase 2 — IDE cleanup pass (structure, types, reliability, a11y)
+
+Extension-layer work only. No visual redesign, no concept/flow/copy/layout
+changes, no new product features. Figma Make remains the design source of truth;
+no UI that originated in Make was restructured (no Make file URL was provided
+this pass, so design-context-dependent visual work was intentionally deferred).
+
+**A — TypeScript tooling**
+- Added `tsconfig.json` (strict, React 18, `@/` alias) and `tsconfig.node.json`.
+- Added `src/vite-env.d.ts` declaring the `figma:foundry-client-api` virtual
+  module so typecheck passes on the Make entrypoint.
+- Added `typecheck` script (`tsc --noEmit`). Passes clean.
+
+**B — Standalone local run path (additive)**
+- Added `index.html` + `src/main.tsx` that render `App.tsx`. The Figma Make
+  entrypoint (`__figma__entrypoint__.ts`) is untouched and still works.
+- Promoted `react`/`react-dom` to real dependencies; added `@types/react`,
+  `@types/react-dom`, `typescript` as dev deps.
+- Added `dev` / `preview` scripts.
+- `pnpm-workspace.yaml`: broadened `supportedArchitectures` to include
+  `win32`/`darwin` (was Linux-only) so native binaries install for local dev;
+  approved native build scripts (`esbuild`, `@tailwindcss/oxide`) via
+  `allowBuilds`; moved the legacy `pnpm.overrides` (vite pin) here.
+
+**C — Processing / service reliability**
+- `documentParser.ts`: documented the seam, made delay opt-in, and it now
+  rejects on empty input so callers must handle failure.
+- `App.tsx` + `ProcessingScreen.tsx`: the processing screen now waits for the
+  real `analyzeDocument()` promise AND a minimum animation floor before
+  advancing, holding on an "almost there" message if a future backend is slow.
+- Added `ErrorScreen.tsx` — a calm, on-brand fallback so the user is never stuck.
+
+**D — Accessibility polish**
+- `ProcessingScreen`: step copy is an `aria-live="polite"` status region.
+- `ModeToggle`: full ARIA tab semantics — roving `tabindex`, arrow/Home/End
+  keyboard navigation, and `aria-controls` wired to the chat `tabpanel`.
+- `ChatScreen`: explanation region marked up as `role="tabpanel"`.
+- `ActionCard`: checklist items are `role="checkbox"` with `aria-checked` and
+  visible focus rings.
+
+**E — Housekeeping**
+- Replaced the hardcoded `#fbf3e3` in `ActionCard` with a new
+  `--warning-surface` theme token (exact same color) so nothing bypasses the
+  token system. `globals.css` intentionally left empty.
+
+### Verified
+`pnpm install` → `pnpm typecheck` (clean) → `pnpm build` (2012 modules, builds)
+→ `pnpm dev` (serves on :5173).
+
+---
+
 ## Out of scope (by design)
 
 Real OCR · real PDF parsing · real AI backend · authentication · database ·

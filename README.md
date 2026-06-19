@@ -45,7 +45,8 @@ See [`BUILD_LOG.md`](./BUILD_LOG.md) for the Makeathon workflow story and
 
 ## Tech stack
 
-- **React 18 + TypeScript**
+- **React 18 + TypeScript** (typechecked via `tsconfig.json` — run `pnpm typecheck`)
+- **Vite 6** — Figma Make plugin entry plus an additive standalone `index.html` + `src/main.tsx`
 - **Tailwind CSS v4** with custom WhatNow design tokens (`src/styles/theme.css`)
 - **motion/react** for animation
 - **lucide-react** for icons
@@ -60,11 +61,13 @@ No additional packages are required beyond what ships in `package.json`.
 ```
 src/
 ├── app/App.tsx                 # Root screen orchestrator (state machine)
+├── main.tsx                    # Standalone Vite entry (additive; Make entry preserved)
 ├── screens/                    # One file per screen in the flow
 │   ├── LandingScreen.tsx
 │   ├── DocumentInputScreen.tsx
 │   ├── ProcessingScreen.tsx
-│   └── ChatScreen.tsx          # Chat + cards + mode toggle + final summary
+│   ├── ChatScreen.tsx          # Chat + cards + mode toggle + final summary
+│   └── ErrorScreen.tsx         # Calm fallback if analysis fails
 ├── components/
 │   ├── chat/                   # ChatBubble, ActionCard, ModeToggle
 │   └── ui/                     # Button, ProgressDots
@@ -73,6 +76,7 @@ src/
 │   └── analysisResult.ts
 ├── services/documentParser.ts  # Placeholder — the seam for real parsing/AI later
 ├── types/index.ts              # Core data objects (Document, AnalysisResult, …)
+├── vite-env.d.ts               # Vite + Figma virtual-module type declarations
 └── styles/                     # fonts.css, theme.css, etc.
 ```
 
@@ -80,10 +84,21 @@ src/
 
 ## Running locally
 
-This is a Figma Make project. The Vite dev server runs inside the Figma Make
-environment — use the preview surface there. After cloning from GitHub into a
-standard Vite + React setup, install dependencies with `pnpm install` and wire up
-a Vite entrypoint to render `src/app/App.tsx`.
+This is a **Figma Make first** project, so the source-of-truth entry remains the
+Make-hosted `__figma__entrypoint__.ts` (used inside the Figma Make preview). A
+standalone Vite path was added in the IDE pass purely for local dev and demo
+stability — it does not replace the Make entry.
+
+```bash
+pnpm install      # installs deps incl. React, and approves native build scripts
+pnpm dev          # standalone Vite dev server at http://localhost:5173
+pnpm build        # production build to dist/
+pnpm preview      # preview the production build
+pnpm typecheck    # tsc --noEmit (no errors expected)
+```
+
+The Vite dev/preview server is for local work only; inside Figma Make the app
+still runs through the Make preview surface as before.
 
 ---
 
