@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import { RotateCcw, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { ChatBubble } from "../components/chat/ChatBubble";
 import { ActionCard } from "../components/chat/ActionCard";
-import { ModeToggle } from "../components/chat/ModeToggle";
+import { ModeToggle, tabId } from "../components/chat/ModeToggle";
 import { Button } from "../components/ui/Button";
 import type { AnalysisResult, ExplanationModeName } from "../types";
 
@@ -35,11 +35,22 @@ export function ChatScreen({ analysis, onRestart }: ChatScreenProps) {
       </header>
 
       <div className="mb-6">
-        <ModeToggle variants={analysis.variants} active={mode} onChange={setMode} />
+        <ModeToggle
+          variants={analysis.variants}
+          active={mode}
+          onChange={setMode}
+          panelId="explanation-panel"
+        />
       </div>
 
       {/* Re-key on mode so messages re-animate when the mode changes. */}
-      <div key={mode} className="flex flex-col gap-3">
+      <div
+        id="explanation-panel"
+        role="tabpanel"
+        aria-labelledby={tabId(mode)}
+        key={mode}
+        className="flex flex-col gap-3"
+      >
         {variant.messages.map((message, i) => (
           <ChatBubble key={message.id} delay={i * 0.35} large={large}>
             {message.text}

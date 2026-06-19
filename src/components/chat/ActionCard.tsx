@@ -26,9 +26,9 @@ const ICONS: Record<ActionCardType, typeof CalendarClock> = {
 
 // Accent color per card type — amber for time/risk, teal for the rest.
 const ACCENTS: Record<ActionCardType, string> = {
-  deadline: "text-warning bg-[#fbf3e3]",
+  deadline: "text-warning bg-warning-surface",
   "missing-document": "text-primary bg-secondary",
-  risk: "text-warning bg-[#fbf3e3]",
+  risk: "text-warning bg-warning-surface",
   checklist: "text-primary bg-secondary",
   "call-script": "text-primary bg-secondary",
 };
@@ -85,10 +85,12 @@ function Checklist({
           <li key={item.id}>
             <button
               type="button"
+              role="checkbox"
+              aria-checked={isChecked}
               onClick={() =>
                 setChecked((prev) => ({ ...prev, [item.id]: !prev[item.id] }))
               }
-              className="group flex w-full items-start gap-3 text-left"
+              className="group flex w-full items-start gap-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
             >
               <span
                 className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border transition-colors ${

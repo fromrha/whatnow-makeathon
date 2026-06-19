@@ -23,6 +23,8 @@
   /* Amber for gentle urgency, never alarm-red */
   --warning: #c2841a;
   --warning-foreground: #ffffff;
+  /* Soft amber surface behind warning/time icons (was an inline hex) */
+  --warning-surface: #fbf3e3;
   --destructive: #b5483f;
   --destructive-foreground: #ffffff;
   --border: rgba(28, 28, 46, 0.08);
@@ -90,6 +92,7 @@
   --font-display: var(--font-display);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
+  --color-warning-surface: var(--warning-surface);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
