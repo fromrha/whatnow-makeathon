@@ -76,4 +76,4 @@ export interface AnalysisResult {
   variants: Record<ExplanationModeName, ExplanationVariant>;
 }
 
-export type ScreenName = "landing" | "input" | "processing" | "chat";
+export type ScreenName = "landing" | "input" | "processing" | "chat" | "error";
